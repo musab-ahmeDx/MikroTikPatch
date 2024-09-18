@@ -14,14 +14,18 @@ env:
   CUSTOM_LICENSE_PUBLIC_KEY: ${{ secrets.CUSTOM_LICENSE_PUBLIC_KEY }}
   CUSTOM_NPK_SIGN_PRIVATE_KEY: ${{ secrets.CUSTOM_NPK_SIGN_PRIVATE_KEY }}
   CUSTOM_NPK_SIGN_PUBLIC_KEY: ${{ secrets.CUSTOM_NPK_SIGN_PUBLIC_KEY }}
+  CUSTOM_CLOUD_PUBLIC_KEY: ${{ secrets.CUSTOM_CLOUD_PUBLIC_KEY }}
   MIKRO_LICENSE_PUBLIC_KEY: ${{ secrets.MIKRO_LICENSE_PUBLIC_KEY }}
   MIKRO_NPK_SIGN_PUBLIC_LKEY: ${{ secrets.MIKRO_NPK_SIGN_PUBLIC_LKEY }}
+  MIKRO_CLOUD_PUBLIC_KEY: ${{ secrets.MIKRO_CLOUD_PUBLIC_KEY }}
   MIKRO_LICENCE_URL: ${{ secrets.MIKRO_LICENCE_URL }}
   CUSTOM_LICENCE_URL: ${{ secrets.CUSTOM_LICENCE_URL }}
   MIKRO_UPGRADE_URL: ${{ secrets.MIKRO_UPGRADE_URL }}
   CUSTOM_UPGRADE_URL: ${{ secrets.CUSTOM_UPGRADE_URL }}
   MIKRO_RENEW_URL: ${{ secrets.MIKRO_RENEW_URL }}
   CUSTOM_RENEW_URL: ${{ secrets.CUSTOM_RENEW_URL }}
+  MIKRO_CLOUD_URL: ${{ secrets.MIKRO_CLOUD_URL }}
+  CUSTOM_CLOUD_URL: ${{ secrets.CUSTOM_CLOUD_URL }}
 
 jobs:
   Set_BuildTime:
@@ -384,6 +388,14 @@ jobs:
         mirror --reverse --verbose --only-newer ./publish ${{ secrets.SSH_DIRECTORY }}
         bye
         EOF
+
+    - name: Clear Cloudflare cache
+      if: steps.get_latest.outputs.has_new_version == 'true'
+      run: |
+        curl --request POST --url "https://api.cloudflare.com/client/v4/zones/fe6831ed6dc9e6235e69ef2a31f2e7fe/purge_cache" \
+            --header "Authorization: Bearer 9GDQkzU51QXaqzp1qMjyFKpyeJyOdnNoG9GZQaGP" \
+            --header "Content-Type:application/json" \
+            --data '{"purge_everything": true}'
 
     - name: Delete Release tag ${{ env.LATEST_VERSION }} ${{ matrix.arch }}
       if: steps.get_latest.outputs.has_new_version == 'true'

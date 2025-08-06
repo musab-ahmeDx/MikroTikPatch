@@ -10,6 +10,8 @@ permissions:
   contents: write
 
 env:
+  URL: https://upgrade.mikrotik.com
+  URL2: https://upgrade.mikrotik.com
   CUSTOM_LICENSE_PRIVATE_KEY: ${{ secrets.CUSTOM_LICENSE_PRIVATE_KEY }}
   CUSTOM_LICENSE_PUBLIC_KEY: ${{ secrets.CUSTOM_LICENSE_PUBLIC_KEY }}
   CUSTOM_NPK_SIGN_PRIVATE_KEY: ${{ secrets.CUSTOM_NPK_SIGN_PRIVATE_KEY }}
